@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<title>Empirio</title>
+		<link rel="stylesheet" href="stylesheet.css">
+		<script src="common.js" charset="utf-8"></script>
+		<script src="game.js" charset="utf-8"></script>
+	</head>
+	<body>
+		<div class="center vertical-parent" id="menu">
+			<span class="start">
+				<h1>Empir.io</h1>
+				<form id="options">
+					<p>
+						<label for="playername">Name:</label>
+						<input type="text" name="playername" id="playername"><br>
+					</p>
+					<p>
+						<label for="colour">Colour:</label>
+						<select name="colour" id="colour">
+							<option value="f00">Red</option>
+							<option value="0f0">Green</option>
+							<option value="00f">Blue</option>
+							<option value="ff0">Yellow</option>
+							<option value="f0f">Purple</option>
+							<option value="f0Gf">Bad</option>
+						</select>
+					</p>
+					<p>
+						<label for="room">Room:</label>
+						<input class="room" type="number" name="room" id="room"><br>
+					</p>
+				</form>
+				<div class="errors" id="errors">Errors</div>
+				<button id="play-button" disabled>Play</button>
+			</span>
+		</div>
+		<div id="game">
+			<div id="table-container">
+			</div>
+			<div class="center bottom">
+				<div class="counter">
+					<div id="power">0</div>
+					<div id="roomId">Room #???</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

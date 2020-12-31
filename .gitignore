@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/empirio
+empirio.so
+empirio.dylib
+empirio.dll
+empirio.a
+empirio.lib
+empirio-test-*
+*.exe
+*.o
+*.obj
+*.lst
