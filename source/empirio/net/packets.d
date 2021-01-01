@@ -47,3 +47,51 @@ struct ServerStartPacket
 	/// The id of the player.
 	string playerId;
 }
+
+/**
+A packet which is sent when a player has joined.
+*/
+struct ServerPlayerJoinPacket
+{
+	/// The type of the packet.
+	string type = "playerJoin";
+
+	/// The name of the player.
+	string name;
+
+	/// The ID of the player.
+	string id;
+
+	/// The colour of the player.
+	string colour;
+}
+
+/**
+A packet which is sent when a tile has changed.
+*/
+struct ServerTileChangePacket
+{
+	/// The type of the packet.
+	string type = "tileChange";
+
+	/// The X coordinate of the tile.
+	int x;
+
+	/// The Y coordinate of the tile.
+	int y;
+
+	/// The ID of the owner. Empty if the tile is not currently owned by anyone.
+	string owner = "";
+
+	/// The strength of the tile.
+	uint strength;
+}
+
+/**
+A packet which is sent when all tile change packets have been sent.
+*/
+struct ServerMapLoadedPacket
+{
+	/// The type of the packet.
+	string type = "mapLoaded";
+}

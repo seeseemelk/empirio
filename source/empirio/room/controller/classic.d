@@ -6,10 +6,15 @@ import empirio.room.controller;
 import empirio.room.observer;
 import empirio.room.tile;
 
+import optional;
+import std.algorithm;
+import std.random;
+import std.array;
+
 /**
 A room controller which implements the classic style of gameplay.
 */
-final class ClassicController : RoomController, RoomObserver
+final class ClassicController : RoomController
 {
 	private PlayerData[Player] _data;
 	private Room _room;
@@ -19,15 +24,20 @@ final class ClassicController : RoomController, RoomObserver
 		_room = room;
 	}
 
-    override void onTileClicked(Player player, Tile tile)
+    void onTileClicked(Player player, Tile tile)
     {
     }
 
-    override void onPlayerJoined(Player player)
+    void onPlayerJoined(Player player)
     {
 		auto data = new PlayerData;
 		_data[player] = data;
 
+		auto capital = _room.findEmptyTiles().array().choice();
+		capital.owner = some(player);
+		capital.type = TileType.capital;
+		data.capital = capital;
+		_room.setTile(capital);
     }
 
 	/**

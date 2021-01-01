@@ -1,3 +1,4 @@
+import { Player } from './player';
 
 /**
  * A single tile on a field.
@@ -22,7 +23,16 @@ export class Tile
 	 */
 	setColour(colour: string): void
 	{
-		this._element.style.backgroundColor = colour;
+		console.log("Colour of " + this._element.id + ": " + colour);
+		this._element.style.backgroundColor = "#" + colour;
+	}
+
+	/**
+	 * Sets the owner the tile.
+	 */
+	setOwner(player: Player): void
+	{
+		this.setColour(player.colour);
 	}
 
 	/**

@@ -1,4 +1,5 @@
-import { ServerErrorPacket, ServerStartPacket } from './packets';
+import { ServerErrorPacket, ServerStartPacket, ServerPlayerJoinPacket,
+         ServerTileChangePacket, ServerMapLoadedPacket } from './packets';
 
 /**
  * Acts on events from a connection.
@@ -24,6 +25,21 @@ export interface ConnectionHandler
 	 * Executed when a start packet is received.
 	 */
 	onStart(packet: ServerStartPacket): void;
+
+	/**
+	 * Executed when a player joined.
+	 */
+	onPlayerJoined(packet: ServerPlayerJoinPacket): void;
+
+	/**
+	 * Executed when a player joined.
+	 */
+	onTileChangePacket(packet: ServerTileChangePacket): void;
+
+	/**
+	 * Executed when the map has been loaded completely.
+	 */
+	onMapLoadedPacket(packet: ServerMapLoadedPacket): void;
 }
 
 /**
@@ -88,6 +104,15 @@ export class Connection
 			break;
 		case "start":
 			this._handler.onStart(<ServerStartPacket> data);
+			break;
+		case "playerJoin":
+			this._handler.onPlayerJoined(<ServerPlayerJoinPacket> data);
+			break;
+		case "tileChange":
+			this._handler.onTileChangePacket(<ServerTileChangePacket> data);
+			break;
+		case "mapLoaded":
+			this._handler.onMapLoadedPacket(<ServerMapLoadedPacket> data);
 			break;
 		}
 	}

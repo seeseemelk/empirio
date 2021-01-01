@@ -18,6 +18,9 @@ struct Tile
 	/// The owner of the tile.
 	Optional!Player owner;
 
+	/// The strength of the tile.
+	int strength;
+
 	/// The type of tile.
 	TileType type = TileType.unowned;
 }

@@ -7,6 +7,7 @@ import empirio.room.observer;
 import empirio.room.tile;
 
 import optional;
+import std.algorithm;
 
 /**
 Contains the settings set at creation of a room.
@@ -45,7 +46,6 @@ class Room
         _tiles = new Tile[][](settings.width, settings.height);
 
         _controller = new ClassicController;
-        _observers ~= _controller;
 
 		_controller.room = this;
     }
@@ -90,6 +90,9 @@ class Room
     */
     void setTile(Tile tile)
     {
+		Tile oldTile = _tiles[tile.x][tile.y];
+		if (tile != oldTile)
+			observers.each!(observer => observer.onTileChanged(oldTile, tile));
         _tiles[tile.x][tile.y] = tile;
     }
 
@@ -109,6 +112,7 @@ class Room
         _players ~= player;
         foreach (observer; _observers)
             observer.onPlayerJoined(player);
+		_controller.onPlayerJoined(player);
     }
 
     /**
@@ -153,6 +157,26 @@ class Room
 	Optional!Tile findEmptyTile()
 	{
 		return findTile(tile => tile.type == TileType.unowned);
+	}
+
+	/**
+	Find all tiles which satisfy a predicate.
+	Params:
+		predicate = A predicate which a tile must satisfy.
+	*/
+	auto findAll(bool delegate(Tile) predicate)
+	{
+		return _tiles
+			.joiner()
+			.filter!predicate;
+	}
+
+	/**
+	Finds all empty tiles.
+	*/
+	auto findEmptyTiles()
+	{
+		return findAll(tile => tile.type == TileType.unowned);
 	}
 }
 

@@ -1,11 +1,5 @@
 export namespace UI
 {
-	let g_screen: Screen;
-	let g_lobby: HTMLElement;
-	let g_game: HTMLElement;
-	let g_mouseDrag: MouseDragEvent;
-	let g_mouseDragListener: MouseDragListener;
-
 	export class MouseDragEvent
 	{
 		down: boolean = false;
@@ -75,17 +69,33 @@ export namespace UI
 		game
 	}
 
+	let g_screen: Screen;
+	let g_lobby: HTMLElement;
+	let g_game: HTMLElement;
+	let g_spinner: HTMLDivElement;
+	let g_spinnerImage: HTMLImageElement;
+	let g_mouseDrag: MouseDragEvent = new MouseDragEvent();
+	let g_mouseDragListener: MouseDragListener;
+
 	/**
 	 * Initialises the UI.
 	 */
 	export function init(listener: MouseDragListener): void
 	{
-		g_mouseDrag = new MouseDragEvent();
 		g_mouseDragListener = listener;
 		g_lobby = document.getElementById('menu')!;
 		g_game = document.getElementById('game')!;
+		g_spinner = <HTMLDivElement> document.getElementById('spinner')!;
+		g_spinnerImage = <HTMLImageElement> document.getElementById('spinnerImage')!;
 
 		show(Screen.lobby);
+
+		let rotation = 0;
+		window.setInterval(() =>
+		{
+			g_spinnerImage.style.rotate = rotation + 'deg';
+			rotation += 45;
+		}, 100);
 
 		window.onselectstart = (event: Event) =>
 		{
@@ -154,5 +164,21 @@ export namespace UI
 		g_screen = screen;
 		g_lobby.style.display = (screen === Screen.lobby) ? 'auto' : 'none';
 		g_game.style.display = (screen === Screen.game) ? 'block': 'none';
+	}
+
+	/**
+	 * Shows the loading spinner.
+	 */
+	export function showSpinner(): void
+	{
+		g_spinner.style.display = 'flex';
+	}
+
+	/**
+	 * Hides the loading spinner.
+	 */
+	export function hideSpinner(): void
+	{
+		g_spinner.style.display = 'none';
 	}
 }

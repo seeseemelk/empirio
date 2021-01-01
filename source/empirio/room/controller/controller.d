@@ -8,7 +8,7 @@ import empirio.room.tile;
 /**
 A class which controls a room.
 */
-interface RoomController : RoomObserver
+interface RoomController
 {
 	/**
 	Sets the room to manage.
@@ -19,6 +19,16 @@ interface RoomController : RoomObserver
 
     /**
     Executed when a tile is clicked.
+	Params:
+		player = The player who joined.
+		tile = The tile that was clicked.
     */
     void onTileClicked(Player player, Tile tile);
+
+	/**
+	Executed when a player joined.
+	Params:
+		player = The player who joined.
+	*/
+	void onPlayerJoined(Player player);
 }

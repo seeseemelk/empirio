@@ -5,6 +5,8 @@ import empirio.net.socket;
 import empirio.player;
 import empirio.room;
 
+import optional;
+import std.algorithm;
 import std.uuid;
 
 /**
@@ -34,11 +36,18 @@ final class HumanPlayer : Player, RoomObserver
         _socket = socket;
         _uuid = randomUUID();
 
-        _room.addPlayer(this);
-        _room.addObserver(this);
+		_room.addObserver(this);
     }
 
-    override UUID uuid() const
+	/**
+	Sends the entire map to the player.
+	*/
+	void sendMap()
+	{
+		_socket.send(ServerMapLoadedPacket());
+	}
+
+    override UUID id() const
     {
         return _uuid;
     }
@@ -55,13 +64,33 @@ final class HumanPlayer : Player, RoomObserver
 
 	override void onPlayerJoined(Player player)
 	{
-		//socket.send(packet);
+		if (player !is this)
+		{
+			ServerPlayerJoinPacket packet;
+			packet.colour = player.colour;
+			packet.id = player.id.toString();
+			packet.name = player.name;
+			_socket.send(packet);
+		}
+	}
+
+	override void onTileChanged(Tile _, Tile newTile)
+	{
+		ServerTileChangePacket packet;
+		newTile.owner.each!((Player owner)
+		{
+			packet.owner = owner.id.toString();
+		});
+		packet.x = newTile.x;
+		packet.y = newTile.y;
+		packet.strength = newTile.strength;
+		_socket.send(packet);
 	}
 
 	/**
 	Sends the play packet.
 	*/
-	void sendStartPacket()
+	void sendStart()
 	{
 		ServerStartPacket packet;
 		packet.room = _room.id;

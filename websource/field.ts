@@ -55,6 +55,14 @@ export class Field implements UI.MouseDragListener
 		this._table.style.top = this._y + 'px';
 	}
 
+	/**
+	 * Gets a tile.
+	 */
+	get(x: number, y: number): Tile
+	{
+		return this._tiles[y][x];
+	}
+
 	onDrag(event: UI.MouseDragEvent): void
 	{
 		this._x += event.dx();
@@ -74,6 +82,7 @@ export class Field implements UI.MouseDragListener
 			for (let x = 0; x < this._width; x++)
 			{
 				let element = document.createElement("td");
+				element.id = "tile-" + x + "-" + y;
 				row[x] = new Tile(element);
 			}
 			tiles[y] = row;
@@ -93,7 +102,7 @@ export class Field implements UI.MouseDragListener
 			let row = document.createElement("tr");
 			for (let y = 0; y < this._height; y++)
 			{
-				let tile = this._tiles[y][x].element();
+				let tile = this.get(x, y).element();
 				tile.innerText = "";
 				tile.onclick = () => this.clickedTile(x, y);
 				row.appendChild(tile);

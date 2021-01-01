@@ -8,9 +8,9 @@ Describes a person who is participating in a match.
 interface Player
 {
     /**
-    Gets the UUID of the player.
+    Gets the ID of the player.
     */
-    UUID uuid() const pure;
+    UUID id() const pure;
 
     /**
     Gets the username of the player.

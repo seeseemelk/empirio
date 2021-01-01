@@ -180,3 +180,12 @@ table td
 	font-size: 11px;
 	line-height: 0px;
 }
+
+.overlay
+{
+	background-color: rgba(0, 0, 0, 0.5);
+	color: #FFF;
+	position: absolute;
+	width: 100%;
+	z-index: 1;
+}

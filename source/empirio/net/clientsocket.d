@@ -62,28 +62,6 @@ else
                     default:
                         logInfo("Received invalid packet from user");
                 }
-
-                /*
-                if (packetType == "play" && state == State.MENU)
-    			{
-    				if (json["room"].type == Json.Type.undefined)
-    				{
-    					playGame(json["username"].to!string,
-    							json["colour"].to!string, Nullable!int.init);
-    				}
-    				else
-    					playGame(json["username"].to!string,
-    							json["colour"].to!string, json["room"].to!int.nullable);
-    			}
-    			else if (packetType == "click" && state == State.GAME)
-    			{
-    				click(json["x"].to!int, json["y"].to!int);
-    			}
-    			else
-    			{
-    				logInfo("Received invalid packet from user");
-    			}
-                */
     		}
     	}
 
@@ -126,7 +104,9 @@ else
 			auto room = _game.getRoom(1000);
 			auto player = new HumanPlayer(this, room, packet.username, packet.colour);
             _player = some(player);
-			player.sendStartPacket();
+			player.sendStart();
+			room.addPlayer(player);
+			player.sendMap();
         }
 
         private void handle(ClientClickPacket packet)
