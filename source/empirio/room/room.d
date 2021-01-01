@@ -43,7 +43,17 @@ class Room
     {
         _id = id;
         _settings = settings;
-        _tiles = new Tile[][](settings.width, settings.height);
+        _tiles = new Tile[][](settings.height, settings.width);
+
+		foreach (y, ref row; _tiles)
+		{
+			foreach (x, ref tile; row)
+			{
+				tile.x = cast(uint) x;
+				tile.y = cast(uint) y;
+				tile.type = TileType.unowned;
+			}
+		}
 
         _controller = new ClassicController;
 

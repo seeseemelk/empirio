@@ -10,10 +10,10 @@ Describes a tile in the room.
 struct Tile
 {
     /// The X-coordinate of the tile.
-    int x;
+    uint x;
 
     /// The Y-coordinate of the tile.
-    int y;
+    uint y;
 
 	/// The owner of the tile.
 	Optional!Player owner;

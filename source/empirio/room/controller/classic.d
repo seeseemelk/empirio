@@ -36,6 +36,7 @@ final class ClassicController : RoomController
 		auto capital = _room.findEmptyTiles().array().choice();
 		capital.owner = some(player);
 		capital.type = TileType.capital;
+		capital.strength = 100;
 		data.capital = capital;
 		_room.setTile(capital);
     }
