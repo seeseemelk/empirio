@@ -6,6 +6,8 @@ import empirio.room.controller.classic;
 import empirio.room.observer;
 import empirio.room.tile;
 
+import optional;
+
 /**
 Contains the settings set at creation of a room.
 */
@@ -44,6 +46,8 @@ class Room
 
         _controller = new ClassicController;
         _observers ~= _controller;
+
+		_controller.room = this;
     }
 
     /**
@@ -124,6 +128,32 @@ class Room
     {
         _observers ~= observer;
     }
+
+	/**
+	Finds a tile which satifies the predicate.
+	Params:
+		predicate = A predicate the tile must satisfy.
+	*/
+	Optional!Tile findTile(bool delegate(Tile) predicate)
+	{
+		foreach (row; _tiles)
+		{
+			foreach (tile; row)
+			{
+				if (predicate(tile))
+					return some(tile);
+			}
+		}
+		return no!Tile;
+	}
+
+	/**
+	Finds an empty tile.
+	*/
+	Optional!Tile findEmptyTile()
+	{
+		return findTile(tile => tile.type == TileType.unowned);
+	}
 }
 
 @("Room.controller() returns the controller of the room")

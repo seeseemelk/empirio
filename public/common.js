@@ -78,7 +78,7 @@ let common = {
 
 		if (room)
 		{
-			playRequest.room = room;
+			playRequest.room = parseInt(room);
 			console.log("Joining room " + room);
 		}
 		else
@@ -109,11 +109,6 @@ let common = {
 		game.start(room, {x: message.startX, y: message.startY}, message.playerId);
 	}
 
-	function fakeStartGame()
-	{
-		startGame({id: 1, width: 11, height: 11, startX: 5, startY: 5, playerId: '000'});
-	}
-
 	function startWebsocket()
 	{
 		let roomId = encodeURIComponent(document.getElementById("room").value);
@@ -125,7 +120,6 @@ let common = {
 			console.log("Socket connected");
 			common.socket = websocket;
 			setPlayButtonEnabled(true);
-			//fakeStartGame();
 		}
 
 		websocket.onerror = function(error)

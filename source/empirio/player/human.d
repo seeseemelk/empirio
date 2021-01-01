@@ -1,5 +1,6 @@
 module empirio.player.human;
 
+import empirio.net.packets;
 import empirio.net.socket;
 import empirio.player;
 import empirio.room;
@@ -51,6 +52,24 @@ final class HumanPlayer : Player, RoomObserver
     {
         return _colour;
     }
+
+	override void onPlayerJoined(Player player)
+	{
+		//socket.send(packet);
+	}
+
+	/**
+	Sends the play packet.
+	*/
+	void sendStartPacket()
+	{
+		ServerStartPacket packet;
+		packet.room = _room.id;
+		packet.width = _room.settings.width;
+		packet.height = _room.settings.height;
+		packet.playerId = _uuid.toString();
+		_socket.send(packet);
+	}
 }
 
 @("HumanPlayer.name() returns the name")
@@ -59,7 +78,7 @@ unittest
     import mocked : Mocker;
     Mocker mocker;
     auto socket = mocker.mock!Socket();
-    const player = new HumanPlayer(socket, "hello", "F00");
+    const player = new HumanPlayer(socket, new Room(1), "hello", "F00");
     assert(player.name() == "hello");
 }
 
@@ -69,6 +88,6 @@ unittest
     import mocked : Mocker;
     Mocker mocker;
     auto socket = mocker.mock!Socket();
-    const player = new HumanPlayer(socket, "hello", "F00");
+    const player = new HumanPlayer(socket, new Room(1), "hello", "F00");
     assert(player.colour() == "F00");
 }

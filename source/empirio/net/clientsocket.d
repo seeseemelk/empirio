@@ -8,10 +8,14 @@ else
     import empirio.net.socket;
     import empirio.player.human;
 
+	import core.time;
+	import vibe.core.log;
+	import vibe.data.json;
+	import vibe.http.websockets;
     import optional;
     import std.algorithm;
     import std.container;
-    import vibe.vibe;
+    import vibe.core.sync;
 
     /**
     A class which handles the communication to and from a player.
@@ -50,11 +54,11 @@ else
                 switch (packetType)
                 {
                     case "play":
-                        handle(deserializeJson!PlayPacket(json));
-                        break;
+                        handle(deserializeJson!ClientPlayPacket(json));
+						break;
                     case "click":
-                        handle(deserializeJson!ClickPacket(json));
-                        break;
+                        handle(deserializeJson!ClientClickPacket(json));
+						break;
                     default:
                         logInfo("Received invalid packet from user");
                 }
@@ -113,16 +117,19 @@ else
     		_event.emit;
     	}
 
-        private void handle(PlayPacket packet)
+        private void handle(ClientPlayPacket packet)
         {
             if (!isValidColour(packet.colour))
                 return;
             if (!isValidUsername(packet.username))
                 return;
-            _player = some(new HumanPlayer(this, packet.username, packet.colour));
+			auto room = _game.getRoom(1000);
+			auto player = new HumanPlayer(this, room, packet.username, packet.colour);
+            _player = some(player);
+			player.sendStartPacket();
         }
 
-        private void handle(ClickPacket packet)
+        private void handle(ClientClickPacket packet)
         {
             _player.each!(player =>
             {

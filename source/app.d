@@ -9,7 +9,11 @@ else
 	import etc.linux.memoryerror;
 	import std.conv;
 	import std.uuid;
-	import vibe.vibe;
+	import vibe.core.core;
+	import vibe.http.fileserver;
+	import vibe.http.router;
+	import vibe.http.websockets;
+	import vibe.web.web;
 
 	private:
 	final class Empirio

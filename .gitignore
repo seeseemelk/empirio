@@ -13,3 +13,4 @@ empirio-test-*
 *.o
 *.obj
 *.lst
+node_modules
