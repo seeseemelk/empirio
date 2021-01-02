@@ -3,6 +3,18 @@ import { UI } from './ui/common';
 import { Tile } from './tile';
 
 /**
+ * An interface which handles clicks somewhere on the field.
+ */
+export interface FieldCallback
+{
+	/**
+	 * Executed when a tile is clicked.
+	 * @param tile The tile which was clicked.
+	 */
+	onTileClicked(tile: Tile): void;
+}
+
+/**
  * A field of many tiles.
  */
 export class Field implements UI.MouseDragListener
@@ -11,13 +23,15 @@ export class Field implements UI.MouseDragListener
 	private readonly _height: number;
 	private readonly _table: HTMLTableElement;
 	private readonly _tiles: Tile[][];
+	private readonly _callback: FieldCallback;
 	private _x: number = 0;
 	private _y: number = 0;
 
-	constructor(width: number, height: number)
+	constructor(width: number, height: number, callback: FieldCallback)
 	{
 		this._width = width;
 		this._height = height;
+		this._callback = callback;
 		this._tiles = this.createTiles();
 		this._table = this.createTable();
 	}
@@ -82,8 +96,13 @@ export class Field implements UI.MouseDragListener
 			for (let x = 0; x < this._width; x++)
 			{
 				let element = document.createElement("td");
-				element.id = "tile-" + x + "-" + y;
-				row[x] = new Tile(element);
+				let tile = new Tile(element, x, y);
+				row[x] = tile;
+				element.onclick = () =>
+				{
+					if (!UI.isDragging())
+						this._callback.onTileClicked(tile);
+				}
 			}
 			tiles[y] = row;
 		}
@@ -104,19 +123,10 @@ export class Field implements UI.MouseDragListener
 			{
 				let tile = this.get(x, y).element();
 				tile.innerText = "";
-				tile.onclick = () => this.clickedTile(x, y);
 				row.appendChild(tile);
 			}
 			table.appendChild(row);
 		}
 		return table;
-	}
-
-	/**
-	 * Executed when a tile is clicked.
-	 */
-	private clickedTile(_1: number, _2: number): void
-	{
-
 	}
 }

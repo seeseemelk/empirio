@@ -85,6 +85,15 @@ class Room
 	}
 
 	/**
+	Tests if a given coordinate exists on the board.
+	*/
+	bool tileExists(int x, int y)
+	{
+		return x >= 0 && x < settings.width
+		    && y >= 0 && y < settings.height;
+	}
+
+	/**
 	Gets a tile.
 	*/
 	Tile getTile(int x, int y)
@@ -98,7 +107,7 @@ class Room
 	/**
 	Sets a tile.
 	*/
-	void setTile(Tile tile)
+	void saveTile(Tile tile)
 	{
 		Tile oldTile = _tiles[tile.x][tile.y];
 		if (tile != oldTile)
@@ -196,6 +205,22 @@ class Room
 	{
 		return findAll(tile => tile.type != TileType.unowned);
 	}
+
+	/**
+	Attacks a tile with a given amount of power.
+	Params:
+		player = The player who attacks.
+		x = The X coordinate of the tile to attack.
+		y = The Y coordinate of the tile to attack.
+		power = The power to attack with.
+	Returns: `true` if the tile was attacked and the power was consumed, `false`
+	if the tile could not be attacked.
+	*/
+	bool attackTile(Player player, int x, int y, int power)
+	{
+		auto tile = getTile(x, y);
+		return _controller.onTileClicked(player, tile, power);
+	}
 }
 
 version(unittest)
@@ -258,7 +283,7 @@ version(unittest)
 		Room room = new Room(0);
 		Tile aTile = room.getTile(5, 4);
 		aTile.owner = mocker.stub!Player();
-		room.setTile(aTile);
+		room.saveTile(aTile);
 		assert(room.findNonEmptyTiles().all!(tile => tile == aTile));
 	}
 }

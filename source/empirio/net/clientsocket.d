@@ -116,10 +116,7 @@ else
 
 		private void handle(ClientClickPacket packet)
 		{
-			_player.each!(player =>
-			{
-
-			});
+			_player.each!(player => player.handle(packet));
 		}
 
 		private bool isValidColour(string colour)

@@ -22,8 +22,9 @@ interface RoomController
 	Params:
 		player = The player who joined.
 		tile = The tile that was clicked.
+		power = The power the tile was attacked with.
     */
-    void onTileClicked(Player player, Tile tile);
+    bool onTileClicked(Player player, Tile tile, int power);
 
 	/**
 	Executed when a player joined.

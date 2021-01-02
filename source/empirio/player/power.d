@@ -53,7 +53,7 @@ Counts the power a player has at any given time.
 	*/
 	private static uint get(long milliseconds) @safe
 	{
-		return cast(uint) min(lround(pow(milliseconds / 1000f, 2)), 999);
+		return cast(uint) min(floor(pow(milliseconds / 1000f, 2)), 999);
 	}
 }
 

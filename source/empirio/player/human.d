@@ -3,6 +3,7 @@ module empirio.player.human;
 import empirio.net.packets;
 import empirio.net.socket;
 import empirio.player;
+import empirio.player.power;
 import empirio.room;
 
 import optional;
@@ -19,6 +20,7 @@ final class HumanPlayer : Player, RoomObserver
 	private string _colour;
 	private string _name;
 	private UUID _uuid;
+	private PowerCounter _power;
 
 	/**
 	Creates a new human player.
@@ -37,6 +39,7 @@ final class HumanPlayer : Player, RoomObserver
 		_uuid = randomUUID();
 
 		_room.addObserver(this);
+		_power.reset();
 	}
 
 	/**
@@ -48,6 +51,18 @@ final class HumanPlayer : Player, RoomObserver
 			.each!(player => onPlayerJoined(player));
 		_room.findNonEmptyTiles().each!(tile => sendTile(tile));
 		_socket.send(ServerMapLoadedPacket());
+	}
+
+	/**
+	Handles a click packet.
+	*/
+	void handle(ClientClickPacket packet)
+	{
+		const power = _power.get();
+		if (_room.attackTile(this, packet.x, packet.y, cast(int) power))
+		{
+			_power.reset();
+		}
 	}
 
 	override UUID id() const

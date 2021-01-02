@@ -73,7 +73,7 @@ class Empirio implements ConnectionHandler, LobbyUI.Handler,
 		GameUI.setRoom(packet.room);
 		let player = new Player(packet.playerId, this._playerName,
 		                        this._playerColour);
-		this._room = new Room(packet, player);
+		this._room = new Room(this._connection, packet, player);
 		UI.show(UI.Screen.game);
 	}
 

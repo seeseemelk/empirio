@@ -121,7 +121,6 @@ export namespace UI
 			if (g_screen != Screen.game)
 				return true;
 			g_mouseDrag.down = false;
-			g_mouseDrag.dragging = false;
 			event.stopPropagation();
 			return false;
 		};
@@ -145,6 +144,23 @@ export namespace UI
 			}
 			return false;
 		};
+
+		window.onclick = (_: MouseEvent) =>
+		{
+			if (g_screen != Screen.game)
+				return true;
+			if (!g_mouseDrag.down && g_mouseDrag.dragging)
+				g_mouseDrag.dragging = false;
+			return false;
+		};
+	}
+
+	/**
+	 * Gets whether the mouse is currently being dragged or not.
+	 */
+	export function isDragging(): boolean
+	{
+		return g_mouseDrag.dragging;
 	}
 
 	/**

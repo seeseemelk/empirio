@@ -1,23 +1,28 @@
 import { ServerStartPacket } from './net/packets';
-import { Field } from './field';
+import { Connection } from './net/connection';
+import { Field, FieldCallback } from './field';
 import { Player } from './player';
 import { UI } from './ui/common';
 import { GameUI } from './ui/game';
-import { ServerTileChangePacket, ServerPlayerJoinPacket } from './net/packets';
+import { ServerTileChangePacket, ServerPlayerJoinPacket, ClientClickPacket } from './net/packets';
+import { Tile } from './tile';
 
-export class Room implements UI.MouseDragListener, GameUI.Handler
+export class Room implements UI.MouseDragListener, GameUI.Handler, FieldCallback
 {
-	private _field: Field;
-	private _player: Player;
+	private readonly _field: Field;
+	private readonly _player: Player;
+	private readonly _connection: Connection;
 	private _powerStartTime: number;
 	private _players: Map<string, Player> = new Map<string, Player>();
 
-	constructor(packet: ServerStartPacket, player: Player)
+	constructor(connection: Connection, packet: ServerStartPacket, player: Player)
 	{
-		this._field = new Field(packet.width, packet.height);
+		this._field = new Field(packet.width, packet.height, this);
 
 		this._player = player;
 		this.addPlayer(this._player);
+
+		this._connection = connection;
 
 		this._field.show();
 		this._powerStartTime = Date.now();
@@ -53,7 +58,6 @@ export class Room implements UI.MouseDragListener, GameUI.Handler
 		}
 
 		let tile = this._field.get(packet.x, packet.y);
-		console.log("Tile at " + packet.x + "," + packet.y + " changed");
 		tile.setOwner(owner);
 		tile.setStrength(packet.strength);
 	}
@@ -62,6 +66,15 @@ export class Room implements UI.MouseDragListener, GameUI.Handler
 	{
 		const power = this.power();
 		GameUI.setPower(power);
+    }
+
+    onTileClicked(tile: Tile): void
+	{
+		this._powerStartTime = Date.now();
+		let packet = new ClientClickPacket();
+		packet.x = tile.x();
+		packet.y = tile.y();
+		this._connection.send(packet);
     }
 
 	/**

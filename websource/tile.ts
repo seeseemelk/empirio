@@ -6,15 +6,35 @@ import { Player } from './player';
 export class Tile
 {
 	private readonly _element: HTMLTableDataCellElement;
+	private readonly _x: number;
+	private readonly _y: number;
 	private _strength: number = 0;
 
 	/**
 	 * Creates a new tile.
 	 * @param element The element controlling the tile.
 	 */
-	constructor(element: HTMLTableDataCellElement)
+	constructor(element: HTMLTableDataCellElement, x: number, y: number)
 	{
 		this._element = element;
+		this._x = x;
+		this._y = y;
+	}
+
+	/**
+	 * Gets the X coordinate of the tile.
+	 */
+	x(): number
+	{
+		return this._x;
+	}
+
+	/**
+	 * Gets the Y coordinate of the tile.
+	 */
+	y(): number
+	{
+		return this._y;
 	}
 
 	/**
@@ -23,7 +43,6 @@ export class Tile
 	 */
 	setColour(colour: string): void
 	{
-		console.log("Colour of " + this._element.id + ": " + colour);
 		this._element.style.backgroundColor = "#" + colour;
 	}
 
