@@ -1,17 +1,35 @@
 export namespace GameUI
 {
+	/**
+	A handler which handles game events.
+	*/
+	export interface Handler
+	{
+		/**
+		Executed when the UI should be updated.
+		*/
+		onUpdate(): void;
+	}
+
 	let g_container: HTMLDivElement;
 	let g_power: HTMLDivElement;
 	let g_room: HTMLDivElement;
+	let g_handler: Handler;
 
 	/**
 	 * Initialises the game UI.
 	 */
-	export function init(): void
+	export function init(handler: Handler): void
 	{
 		g_container = <HTMLDivElement> document.getElementById('table-container')!;
 		g_power = <HTMLDivElement> document.getElementById('power')!;
 		g_room = <HTMLDivElement> document.getElementById('roomId')!;
+		g_handler = handler;
+
+		window.setInterval(() =>
+		{
+			g_handler.onUpdate();
+		}, 10);
 	}
 
 	/**

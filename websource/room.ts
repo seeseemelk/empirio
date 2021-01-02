@@ -2,12 +2,14 @@ import { ServerStartPacket } from './net/packets';
 import { Field } from './field';
 import { Player } from './player';
 import { UI } from './ui/common';
+import { GameUI } from './ui/game';
 import { ServerTileChangePacket, ServerPlayerJoinPacket } from './net/packets';
 
-export class Room implements UI.MouseDragListener
+export class Room implements UI.MouseDragListener, GameUI.Handler
 {
 	private _field: Field;
 	private _player: Player;
+	private _powerStartTime: number;
 	private _players: Map<string, Player> = new Map<string, Player>();
 
 	constructor(packet: ServerStartPacket, player: Player)
@@ -18,6 +20,16 @@ export class Room implements UI.MouseDragListener
 		this.addPlayer(this._player);
 
 		this._field.show();
+		this._powerStartTime = Date.now();
+	}
+
+	/**
+	Gets the available power.
+	*/
+	power(): number
+	{
+		const diff = Date.now() - this._powerStartTime;
+		return Math.min(Math.floor(Math.pow(diff / 1000, 2)), 999);
 	}
 
 	onDrag(event: UI.MouseDragEvent): void
@@ -45,6 +57,12 @@ export class Room implements UI.MouseDragListener
 		tile.setOwner(owner);
 		tile.setStrength(packet.strength);
 	}
+
+    onUpdate(): void
+	{
+		const power = this.power();
+		GameUI.setPower(power);
+    }
 
 	/**
 	 * Adds a player to the list of players in the room.

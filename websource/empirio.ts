@@ -9,7 +9,8 @@ import { LobbyUI } from './ui/lobby';
 import { GameUI } from './ui/game';
 import { Room } from './room';
 
-class Empirio implements ConnectionHandler, LobbyUI.Handler, UI.MouseDragListener
+class Empirio implements ConnectionHandler, LobbyUI.Handler,
+	UI.MouseDragListener, GameUI.Handler
 {
 	private readonly _connection: Connection;
 	private _room: Room | null;
@@ -26,7 +27,7 @@ class Empirio implements ConnectionHandler, LobbyUI.Handler, UI.MouseDragListene
 		console.log("Starting...");
 		UI.init(this);
 		LobbyUI.init(this);
-		GameUI.init();
+		GameUI.init(this);
 		LobbyUI.disablePlay();
 		UI.show(UI.Screen.lobby);
 		this._connection.connect();
@@ -92,6 +93,12 @@ class Empirio implements ConnectionHandler, LobbyUI.Handler, UI.MouseDragListene
 	{
 		UI.hideSpinner();
 	}
+
+    onUpdate(): void
+	{
+		if (this._room)
+			this._room.onUpdate();
+    }
 }
 
 window.onload = () =>
