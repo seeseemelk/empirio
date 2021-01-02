@@ -1,5 +1,8 @@
 module empirio.net.packets;
 
+import std.typecons;
+import vibe.data.serialization;
+
 /**
 A packet sent when a user wants to join a match.
 */
@@ -12,7 +15,7 @@ struct ClientPlayPacket
     string colour;
 
     /// The room the player is joining.
-    int room = 0;
+    @optional Nullable!int room;
 }
 
 /**
@@ -81,7 +84,7 @@ struct ServerTileChangePacket
 	int y;
 
 	/// The ID of the owner. Empty if the tile is not currently owned by anyone.
-	string owner = "";
+	@optional Nullable!string owner;
 
 	/// The strength of the tile.
 	uint strength;
