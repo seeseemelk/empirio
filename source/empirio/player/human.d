@@ -8,7 +8,6 @@ import empirio.room;
 import optional;
 import std.algorithm;
 import std.uuid;
-import vibe.core.log;
 
 /**
 Describes a Player who is controlled by a human.
