@@ -120,6 +120,7 @@ final class HumanPlayer : Player, RoomObserver
 		packet.x = tile.x;
 		packet.y = tile.y;
 		packet.strength = tile.strength;
+		packet.tileType = tile.type;
 		_socket.send(packet);
 	}
 }

@@ -1,5 +1,7 @@
 module empirio.net.packets;
 
+import empirio.room.tile : TileType;
+
 import std.typecons;
 import vibe.data.serialization;
 
@@ -88,6 +90,9 @@ struct ServerTileChangePacket
 
 	/// The strength of the tile.
 	uint strength;
+
+	/// The type of the tile.
+	TileType tileType;
 }
 
 /**

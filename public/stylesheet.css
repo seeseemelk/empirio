@@ -113,10 +113,6 @@ canvas
 	user-select: none;
 }
 
-/*
- * OLD CODE HERE
- */
-
 table
 {
 	border-collapse: collapse;
@@ -188,4 +184,17 @@ table td
 	position: absolute;
 	width: 100%;
 	z-index: 1;
+}
+
+.tileUnowned
+{
+}
+
+.tileOwned
+{
+}
+
+.tileCapital
+{
+	text-decoration: underline;
 }

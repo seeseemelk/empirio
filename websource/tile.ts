@@ -1,6 +1,16 @@
 import { Player } from './player';
 
 /**
+ * Describes the type of a tile.
+ */
+export enum TileType
+{
+	unowned,
+	owned,
+	capital
+}
+
+/**
  * A single tile on a field.
  */
 export class Tile
@@ -9,6 +19,7 @@ export class Tile
 	private readonly _x: number;
 	private readonly _y: number;
 	private _strength: number = 0;
+	private _type: TileType;
 
 	/**
 	 * Creates a new tile.
@@ -19,6 +30,8 @@ export class Tile
 		this._element = element;
 		this._x = x;
 		this._y = y;
+
+		this.setTileType(TileType.unowned);
 	}
 
 	/**
@@ -35,6 +48,34 @@ export class Tile
 	y(): number
 	{
 		return this._y;
+	}
+
+	/**
+	 * Gets the type of tile.
+	 */
+	tileType(): TileType
+	{
+		return this._type;
+	}
+
+	/**
+	 * Sets the type of tile.
+	 */
+	setTileType(type: TileType): void
+	{
+		this._type = type;
+		switch (type)
+		{
+		case TileType.unowned:
+			this._element.className = 'tileUnowned';
+			break;
+		case TileType.owned:
+			this._element.className = 'tileOwned';
+			break;
+		case TileType.capital:
+			this._element.className = 'tileCapital';
+			break;
+		}
 	}
 
 	/**

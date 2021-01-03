@@ -1,3 +1,4 @@
+import { TileType } from '../tile';
 
 export class ClientPlayPacket
 {
@@ -46,6 +47,7 @@ export class ServerTileChangePacket
 	y: number;
 	owner: string;
 	strength: number;
+	tileType: TileType;
 }
 
 /**

@@ -60,6 +60,7 @@ export class Room implements UI.MouseDragListener, GameUI.Handler, FieldCallback
 		let tile = this._field.get(packet.x, packet.y);
 		tile.setOwner(owner);
 		tile.setStrength(packet.strength);
+		tile.setTileType(packet.tileType);
 	}
 
     onUpdate(): void
