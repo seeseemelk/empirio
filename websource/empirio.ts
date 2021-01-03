@@ -1,7 +1,7 @@
 import {
 	ClientPlayPacket, ServerErrorPacket, ServerStartPacket,
 	ServerPlayerJoinPacket, ServerTileChangePacket, ServerMapLoadedPacket,
-	ServerPlayerLostPacket
+	ServerPlayerLostPacket, ServerTileAttackPacket
 } from './net/packets';
 import { Connection, ConnectionHandler } from './net/connection';
 import { Player } from './player';
@@ -36,23 +36,6 @@ class Empirio implements ConnectionHandler, LobbyUI.Handler,
 		console.log("Started!");
 	}
 
-	onSocketError(reason: string)
-	{
-		console.log("Socket error: " + reason);
-		UI.showErrorPopup("Connection to the server was lost");
-	}
-
-	onSocketClosed()
-	{
-		console.log("Socket closed");
-		UI.showErrorPopup("Connection to the server was lost");
-	}
-
-	onOpen()
-	{
-		LobbyUI.enablePlay();
-	}
-
 	onPlayClicked(state: LobbyUI.State)
 	{
 		LobbyUI.hideErrorMessage();
@@ -70,6 +53,29 @@ class Empirio implements ConnectionHandler, LobbyUI.Handler,
 	{
 		if (this._room)
 			this._room.onDrag(event);
+	}
+
+    onUpdate(): void
+	{
+		if (this._room)
+			this._room.onUpdate();
+    }
+
+	onOpen()
+	{
+		LobbyUI.enablePlay();
+	}
+
+	onSocketError(reason: string)
+	{
+		console.log("Socket error: " + reason);
+		UI.showErrorPopup("Connection to the server was lost");
+	}
+
+	onSocketClosed()
+	{
+		console.log("Socket closed");
+		UI.showErrorPopup("Connection to the server was lost");
 	}
 
 	onError(packet: ServerErrorPacket)
@@ -106,6 +112,7 @@ class Empirio implements ConnectionHandler, LobbyUI.Handler,
 	onMapLoaded(_: ServerMapLoadedPacket)
 	{
 		UI.hideSpinner();
+		GameUI.hideSpinner();
 	}
 
 	onPlayerLost(packet: ServerPlayerLostPacket)
@@ -114,11 +121,11 @@ class Empirio implements ConnectionHandler, LobbyUI.Handler,
 			this._room.onPlayerLost(packet);
 	}
 
-    onUpdate(): void
+	onAttacked(packet: ServerTileAttackPacket)
 	{
 		if (this._room)
-			this._room.onUpdate();
-    }
+			this._room.onAttacked(packet);
+	}
 }
 
 window.onload = () =>

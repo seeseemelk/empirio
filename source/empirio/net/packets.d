@@ -131,3 +131,15 @@ struct ServerErrorPacket
 	/// be terminated.
 	bool recoverable;
 }
+
+/**
+A packet which is sent after a tile was attacked.
+*/
+struct ServerTileAttackPacket
+{
+	/// The type of the packet.
+	string type = "attack";
+
+	/// `true` if the tile was attacked, `false` if it wasn't.
+	bool attacked;
+}

@@ -65,3 +65,11 @@ export class ServerPlayerLostPacket
 {
 	player: string;
 }
+
+/**
+ * A packet which is sent after a tile was attacked.
+ */
+export class ServerTileAttackPacket
+{
+	attacked: boolean;
+}

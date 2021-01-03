@@ -15,6 +15,7 @@ export namespace GameUI
 	let g_power: HTMLDivElement;
 	let g_room: HTMLDivElement;
 	let g_handler: Handler;
+	let g_spinner: HTMLImageElement;
 
 	/**
 	 * Initialises the game UI.
@@ -24,12 +25,20 @@ export namespace GameUI
 		g_container = <HTMLDivElement> document.getElementById('table-container')!;
 		g_power = <HTMLDivElement> document.getElementById('power')!;
 		g_room = <HTMLDivElement> document.getElementById('roomId')!;
+		g_spinner = <HTMLImageElement> document.getElementById('smallSpinnerImage')!;
 		g_handler = handler;
 
 		window.setInterval(() =>
 		{
 			g_handler.onUpdate();
 		}, 10);
+
+		let rotation = 0;
+		window.setInterval(() =>
+		{
+			g_spinner.style.rotate = rotation + 'deg';
+			rotation += 45;
+		}, 100);
 	}
 
 	/**
@@ -64,5 +73,23 @@ export namespace GameUI
 	export function setRoom(room: number): void
 	{
 		g_room.textContent = "Room #" + room.toString();
+	}
+
+	/**
+	 * Shows the small spinner and hides the power indiciator.
+	 */
+	export function showSpinner(): void
+	{
+		g_power.style.display = 'none';
+		g_spinner.style.display = 'inline';
+	}
+
+	/**
+	 * Hides the small spinner and shows the power indicator.
+	 */
+	export function hideSpinner(): void
+	{
+		g_power.style.display = 'block';
+		g_spinner.style.display = 'none';
 	}
 }

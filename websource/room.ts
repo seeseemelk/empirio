@@ -6,7 +6,8 @@ import { UI } from './ui/common';
 import { GameUI } from './ui/game';
 import {
 	ClientClickPacket,
-	ServerTileChangePacket, ServerPlayerJoinPacket, ServerPlayerLostPacket
+	ServerTileChangePacket, ServerPlayerJoinPacket, ServerPlayerLostPacket,
+	ServerTileAttackPacket
 } from './net/packets';
 import { Tile } from './tile';
 
@@ -88,10 +89,10 @@ export class Room implements UI.MouseDragListener, GameUI.Handler, FieldCallback
 
     onTileClicked(tile: Tile): void
 	{
-		this._powerStartTime = Date.now();
 		let packet = new ClientClickPacket();
 		packet.x = tile.x();
 		packet.y = tile.y();
+		GameUI.showSpinner();
 		this._connection.send(packet);
     }
 
@@ -103,6 +104,13 @@ export class Room implements UI.MouseDragListener, GameUI.Handler, FieldCallback
 			this._state = State.lost;
 			GameUI.setPower("You died");
 		}
+	}
+
+	onAttacked(packet: ServerTileAttackPacket): void
+	{
+		GameUI.hideSpinner();
+		if (packet.attacked)
+			this._powerStartTime = Date.now();
 	}
 
 	/**

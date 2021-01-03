@@ -66,7 +66,10 @@ final class HumanPlayer : Player, RoomObserver
 		if (_room.attackTile(this, packet.x, packet.y, cast(int) power))
 		{
 			_power.reset();
+			sendAttacked(true);
 		}
+		else
+			sendAttacked(false);
 	}
 
 	override UUID id() const
@@ -134,6 +137,13 @@ final class HumanPlayer : Player, RoomObserver
 		packet.y = tile.y;
 		packet.strength = tile.strength;
 		packet.tileType = tile.type;
+		_socket.send(packet);
+	}
+
+	private void sendAttacked(bool attacked)
+	{
+		ServerTileAttackPacket packet;
+		packet.attacked = attacked;
 		_socket.send(packet);
 	}
 }

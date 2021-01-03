@@ -1,6 +1,7 @@
 import {
 	ServerErrorPacket, ServerStartPacket, ServerPlayerJoinPacket,
-    ServerTileChangePacket, ServerMapLoadedPacket, ServerPlayerLostPacket
+    ServerTileChangePacket, ServerMapLoadedPacket, ServerPlayerLostPacket,
+	ServerTileAttackPacket
 } from './packets';
 
 /**
@@ -52,6 +53,11 @@ export interface ConnectionHandler
 	 * Executed when a player lost.
 	 */
 	onPlayerLost(packet: ServerPlayerLostPacket): void;
+
+	/**
+	 * Executed when a tile was attacked.
+	 */
+	onAttacked(packet: ServerTileAttackPacket): void;
 }
 
 /**
@@ -135,6 +141,9 @@ export class Connection
 			break;
 		case "playerLost":
 			this._handler.onPlayerLost(<ServerPlayerLostPacket> data);
+			break;
+		case "attack":
+			this._handler.onAttacked(<ServerTileAttackPacket> data);
 			break;
 		}
 	}
