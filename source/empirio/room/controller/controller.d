@@ -17,6 +17,11 @@ interface RoomController
 	*/
 	void room(Room room);
 
+	/**
+	Releases any allocated releases owned by the controller.
+	*/
+	void close();
+
     /**
     Executed when a tile is clicked.
 	Params:

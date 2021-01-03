@@ -69,9 +69,17 @@ class Room
 	}
 
 	/**
+	Closes the room.
+	*/
+	void close()
+	{
+		_controller.close();
+	}
+
+	/**
 	Gets the settings used when creating the room.
 	*/
-	immutable(RoomSettings) settings() const pure
+	immutable(RoomSettings) settings() const pure @safe nothrow
 	{
 		return _settings;
 	}
@@ -87,7 +95,7 @@ class Room
 	/**
 	Tests if a given coordinate exists on the board.
 	*/
-	bool tileExists(int x, int y)
+	bool tileExists(int x, int y) @safe nothrow
 	{
 		return x >= 0 && x < settings.width
 		    && y >= 0 && y < settings.height;
@@ -96,7 +104,7 @@ class Room
 	/**
 	Gets a tile.
 	*/
-	Tile getTile(int x, int y)
+	Tile getTile(int x, int y) @safe nothrow
 	{
 		Tile tile = _tiles[x][y];
 		tile.x = x;
@@ -107,18 +115,17 @@ class Room
 	/**
 	Sets a tile.
 	*/
-	void saveTile(Tile tile)
+	void saveTile(Tile tile) @safe
 	{
 		Tile oldTile = _tiles[tile.x][tile.y];
-		if (tile != oldTile)
-			observers.each!(observer => observer.onTileChanged(oldTile, tile));
+		observers.each!(observer => observer.onTileChanged(oldTile, tile));
 		_tiles[tile.x][tile.y] = tile;
 	}
 
 	/**
 	Gets the players which are in the room.
 	*/
-	Player[] players()
+	Player[] players() @safe nothrow
 	{
 		return _players;
 	}
@@ -137,7 +144,7 @@ class Room
 	/**
 	Gets the observers which are observing the room.
 	*/
-	RoomObserver[] observers()
+	inout(RoomObserver[]) observers() inout pure nothrow @safe
 	{
 		return _observers;
 	}
@@ -183,7 +190,7 @@ class Room
 	Params:
 		predicate = A predicate which a tile must satisfy.
 	*/
-	auto findAll(bool delegate(Tile) predicate)
+	auto findAll(bool delegate(Tile) predicate) @safe
 	{
 		return _tiles
 			.joiner()
@@ -201,7 +208,7 @@ class Room
 	/**
 	Finds all tiles which are not empty.
 	*/
-	auto findNonEmptyTiles()
+	auto findNonEmptyTiles() @safe
 	{
 		return findAll(tile => tile.type != TileType.unowned);
 	}

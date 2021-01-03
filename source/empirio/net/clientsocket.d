@@ -95,7 +95,7 @@ else
 		Params:
 			message = The message to send to the client.
 		*/
-		private void sendError(const(char[]) message, bool recoverable)
+		private void sendError(const(char[]) message, bool recoverable) @safe
 		{
 			ServerErrorPacket packet;
 			packet.message = message;
@@ -137,7 +137,7 @@ else
 		Params:
 			str = The data to send.
 		*/
-		void send(string str)
+		void send(string str) @safe nothrow
 		{
 			_packets.insertBack(str);
 			_event.emit;

@@ -10,7 +10,7 @@ interface Player
     /**
     Gets the ID of the player.
     */
-    UUID id() const pure;
+    UUID id() const pure nothrow @safe;
 
     /**
     Gets the username of the player.
