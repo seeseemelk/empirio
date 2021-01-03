@@ -1,6 +1,7 @@
 import {
 	ClientPlayPacket, ServerErrorPacket, ServerStartPacket,
-	ServerPlayerJoinPacket, ServerTileChangePacket, ServerMapLoadedPacket
+	ServerPlayerJoinPacket, ServerTileChangePacket, ServerMapLoadedPacket,
+	ServerPlayerLostPacket
 } from './net/packets';
 import { Connection, ConnectionHandler } from './net/connection';
 import { Player } from './player';
@@ -83,15 +84,21 @@ class Empirio implements ConnectionHandler, LobbyUI.Handler,
 			this._room.onPlayerJoined(packet);
 	}
 
-	onTileChangePacket(packet: ServerTileChangePacket)
+	onTileChange(packet: ServerTileChangePacket)
 	{
 		if (this._room)
 			this._room.onTileChange(packet);
 	}
 
-	onMapLoadedPacket(_: ServerMapLoadedPacket)
+	onMapLoaded(_: ServerMapLoadedPacket)
 	{
 		UI.hideSpinner();
+	}
+
+	onPlayerLost(packet: ServerPlayerLostPacket)
+	{
+		if (this._room)
+			this._room.onPlayerLost(packet);
 	}
 
     onUpdate(): void

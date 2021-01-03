@@ -56,3 +56,11 @@ export class ServerTileChangePacket
 export class ServerMapLoadedPacket
 {
 }
+
+/**
+ * A packet which is sent when a player lost.
+ */
+export class ServerPlayerLostPacket
+{
+	player: string;
+}

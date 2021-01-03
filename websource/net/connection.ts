@@ -1,5 +1,7 @@
-import { ServerErrorPacket, ServerStartPacket, ServerPlayerJoinPacket,
-         ServerTileChangePacket, ServerMapLoadedPacket } from './packets';
+import {
+	ServerErrorPacket, ServerStartPacket, ServerPlayerJoinPacket,
+    ServerTileChangePacket, ServerMapLoadedPacket, ServerPlayerLostPacket
+} from './packets';
 
 /**
  * Acts on events from a connection.
@@ -34,12 +36,17 @@ export interface ConnectionHandler
 	/**
 	 * Executed when a player joined.
 	 */
-	onTileChangePacket(packet: ServerTileChangePacket): void;
+	onTileChange(packet: ServerTileChangePacket): void;
 
 	/**
 	 * Executed when the map has been loaded completely.
 	 */
-	onMapLoadedPacket(packet: ServerMapLoadedPacket): void;
+	onMapLoaded(packet: ServerMapLoadedPacket): void;
+
+	/**
+	 * Executed when a player lost.
+	 */
+	onPlayerLost(packet: ServerPlayerLostPacket): void;
 }
 
 /**
@@ -109,10 +116,13 @@ export class Connection
 			this._handler.onPlayerJoined(<ServerPlayerJoinPacket> data);
 			break;
 		case "tileChange":
-			this._handler.onTileChangePacket(<ServerTileChangePacket> data);
+			this._handler.onTileChange(<ServerTileChangePacket> data);
 			break;
 		case "mapLoaded":
-			this._handler.onMapLoadedPacket(<ServerMapLoadedPacket> data);
+			this._handler.onMapLoaded(<ServerMapLoadedPacket> data);
+			break;
+		case "playerLost":
+			this._handler.onPlayerLost(<ServerPlayerLostPacket> data);
 			break;
 		}
 	}

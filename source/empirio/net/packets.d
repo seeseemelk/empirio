@@ -103,3 +103,15 @@ struct ServerMapLoadedPacket
 	/// The type of the packet.
 	string type = "mapLoaded";
 }
+
+/**
+A packet which is sent when a player lost.
+*/
+struct ServerPlayerLostPacket
+{
+	/// The type of the packet.
+	string type = "playerLost";
+
+	/// The ID of the player.
+	string player;
+}

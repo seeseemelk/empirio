@@ -97,6 +97,15 @@ final class HumanPlayer : Player, RoomObserver
 		sendTile(newTile);
 	}
 
+	override void onPlayerLost(Player player)
+	{
+		if (player !is this)
+			return;
+		ServerPlayerLostPacket packet;
+		packet.player = player.id.toString();
+		_socket.send(packet);
+	}
+
 	/**
 	Sends the play packet.
 	*/

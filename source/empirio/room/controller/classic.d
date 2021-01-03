@@ -184,6 +184,7 @@ final class ClassicController : RoomController
 				tile.owner = some(attacker);
 				_room.saveTile(tile);
 			});
+		_room.observers.each!(observer => observer.onPlayerLost(owner));
 	}
 }
 

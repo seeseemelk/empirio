@@ -22,4 +22,11 @@ interface RoomObserver
 		newTile = The new tile.
 	*/
 	void onTileChanged(Tile oldTile, Tile newTile);
+
+	/**
+	Executed when a player lost.
+	Params:
+		player = The player who lost.
+	*/
+	void onPlayerLost(Player player);
 }

@@ -53,7 +53,7 @@ export namespace GameUI
 	/**
 	 * Sets the power level of the user.
 	 */
-	export function setPower(power: number): void
+	export function setPower(power: number | string): void
 	{
 		g_power.innerText = power.toString();
 	}

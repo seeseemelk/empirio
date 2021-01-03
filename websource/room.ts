@@ -4,14 +4,24 @@ import { Field, FieldCallback } from './field';
 import { Player } from './player';
 import { UI } from './ui/common';
 import { GameUI } from './ui/game';
-import { ServerTileChangePacket, ServerPlayerJoinPacket, ClientClickPacket } from './net/packets';
+import {
+	ClientClickPacket,
+	ServerTileChangePacket, ServerPlayerJoinPacket, ServerPlayerLostPacket
+} from './net/packets';
 import { Tile } from './tile';
+
+enum State
+{
+	playing,
+	lost
+}
 
 export class Room implements UI.MouseDragListener, GameUI.Handler, FieldCallback
 {
 	private readonly _field: Field;
 	private readonly _player: Player;
 	private readonly _connection: Connection;
+	private _state: State = State.playing;
 	private _powerStartTime: number;
 	private _players: Map<string, Player> = new Map<string, Player>();
 
@@ -65,8 +75,15 @@ export class Room implements UI.MouseDragListener, GameUI.Handler, FieldCallback
 
     onUpdate(): void
 	{
-		const power = this.power();
-		GameUI.setPower(power);
+		switch (this._state)
+		{
+		case State.playing:
+			const power = this.power();
+			GameUI.setPower(power);
+			break;
+		case State.lost:
+			break;
+		}
     }
 
     onTileClicked(tile: Tile): void
@@ -77,6 +94,16 @@ export class Room implements UI.MouseDragListener, GameUI.Handler, FieldCallback
 		packet.y = tile.y();
 		this._connection.send(packet);
     }
+
+	onPlayerLost(packet: ServerPlayerLostPacket): void
+	{
+		let player = this.getPlayer(packet.player);
+		if (player == this._player)
+		{
+			this._state = State.lost;
+			GameUI.setPower("You died");
+		}
+	}
 
 	/**
 	 * Adds a player to the list of players in the room.
