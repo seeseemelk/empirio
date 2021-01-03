@@ -133,14 +133,21 @@ final class ClassicController : RoomController
 		}
 		else if (tile.strength == power)
 		{
-			tile.strength = 0;
-			tile.owner = no!Player;
-			tile.type = TileType.unowned;
+			if (tile.type == TileType.capital)
+				tile.strength = 1;
+			else
+			{
+				tile.strength = 0;
+				tile.owner = no!Player;
+				tile.type = TileType.unowned;
+			}
 		}
 		else
 		{
 			tile.strength = -(tile.strength - power);
 			tile.owner = some(attacker);
+			if (tile.type == TileType.capital)
+				captureCapital(attacker, owner);
 			tile.type = TileType.owned;
 		}
 		_room.saveTile(tile);
@@ -159,6 +166,24 @@ final class ClassicController : RoomController
 		tile.strength += power;
 		tile.type = TileType.owned;
 		_room.saveTile(tile);
+	}
+
+	/**
+	Captures the capital of one player by another. All tiles of the owner of the
+	capital will be given to the attacker.
+	Params:
+		attacker = The person who attacked the capital.
+		owner = The person who owns the capital.
+	*/
+	private void captureCapital(Player attacker, Player owner)
+	{
+		_room.findNonEmptyTiles()
+			.filter!(tile => tile.owner == owner)
+			.each!((tile)
+			{
+				tile.owner = some(attacker);
+				_room.saveTile(tile);
+			});
 	}
 }
 
@@ -180,6 +205,8 @@ version(unittest)
 		Room room;
 		Player player;
 		ClassicController controller;
+
+		alias player1 = player;
 
 		auto click(int x, int y, int strength)
 		{
@@ -244,6 +271,59 @@ version(unittest)
 			assert(click(1, 1, 5) == true);
 			assert(room.getTile(1, 1).strength == baseStrength+5*2);
 			assert(room.getTile(1, 1).type == TileType.capital);
+		}
+	}
+
+	@("Attacking a capital with the same power as the capital leaves the capital at 1 strength")
+	unittest
+	{
+		with(test())
+		{
+			Player player2 = mocker.stub!Player();
+			room.addPlayer(player2);
+			assert(room.getTile(2, 1).type == TileType.capital);
+			assert(room.getTile(2, 1).strength == 100);
+			assert(room.getTile(2, 1).owner == player2);
+			assert(click(2, 1, 100) == true);
+			assert(room.getTile(2, 1).type == TileType.capital);
+			assert(room.getTile(2, 1).strength == 1);
+			assert(room.getTile(2, 1).owner == player2);
+		}
+	}
+
+	@("Capturing a capital gives all tiles to the other player")
+	unittest
+	{
+		with(test())
+		{
+			Player player2 = mocker.stub!Player();
+			Player player3 = mocker.stub!Player();
+			room.addPlayer(player2);
+			room.addPlayer(player3);
+
+			controller.onTileClicked(player2, room.getTile(2, 0), 100);
+			controller.onTileClicked(player3, room.getTile(3, 0), 100);
+			assert(room.getTile(2, 0).type == TileType.owned);
+			assert(room.getTile(2, 0).strength == 100);
+			assert(room.getTile(2, 0).owner == player2);
+
+			assert(room.getTile(3, 0).type == TileType.owned);
+			assert(room.getTile(3, 0).strength == 100);
+			assert(room.getTile(3, 0).owner == player3);
+
+			assert(click(2, 1, 105) == true);
+
+			assert(room.getTile(2, 1).type == TileType.owned);
+			assert(room.getTile(2, 1).strength == 5);
+			assert(room.getTile(2, 1).owner == player1);
+
+			assert(room.getTile(2, 0).type == TileType.owned);
+			assert(room.getTile(2, 0).strength == 100);
+			assert(room.getTile(2, 0).owner == player1);
+
+			assert(room.getTile(3, 0).type == TileType.owned);
+			assert(room.getTile(3, 0).strength == 100);
+			assert(room.getTile(3, 0).owner == player3);
 		}
 	}
 }
