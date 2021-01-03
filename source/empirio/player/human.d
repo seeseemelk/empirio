@@ -58,6 +58,10 @@ final class HumanPlayer : Player, RoomObserver
 	*/
 	void handle(ClientClickPacket packet)
 	{
+		if (!_room.tileExists(packet.x, packet.y))
+		{
+			_socket.sendError("Tile does not exist");
+		}
 		const power = _power.get();
 		if (_room.attackTile(this, packet.x, packet.y, cast(int) power))
 		{

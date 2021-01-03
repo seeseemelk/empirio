@@ -198,3 +198,17 @@ table td
 {
 	text-decoration: underline;
 }
+
+.errorPopup
+{
+	background-color: #F88;
+	border-radius: 32px;
+	border: 3px solid #F00;
+	padding: 1cm;
+	color: #000;
+}
+
+#errorPopup
+{
+	display: none;
+}

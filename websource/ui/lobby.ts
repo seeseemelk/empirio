@@ -4,7 +4,7 @@ export namespace LobbyUI
 	let g_username: HTMLInputElement;
 	let g_colour: HTMLSelectElement;
 	let g_room: HTMLInputElement;
-
+	let g_errorMessage: HTMLDivElement;
 	let g_handler: Handler;
 
 	/**
@@ -38,6 +38,7 @@ export namespace LobbyUI
 		g_username = <HTMLInputElement> document.getElementById('playername')!;
 		g_colour = <HTMLSelectElement> document.getElementById('colour');
 		g_room = <HTMLInputElement> document.getElementById('room');
+		g_errorMessage = <HTMLDivElement> document.getElementById('smallError');
 
 		g_startButton.addEventListener("click", () =>
 		{
@@ -73,5 +74,22 @@ export namespace LobbyUI
 	export function disablePlay()
 	{
 		g_startButton.disabled = true;
+	}
+
+	/**
+	 * Shows a small error message.
+	 */
+	export function showErrorMessage(message: string): void
+	{
+		g_errorMessage.textContent = message;
+		g_errorMessage.style.visibility = 'visible';
+	}
+
+	/**
+	 * Hides the small error message.
+	 */
+	export function hideErrorMessage(): void
+	{
+		g_errorMessage.style.visibility = 'auto';
 	}
 }

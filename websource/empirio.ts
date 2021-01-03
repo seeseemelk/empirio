@@ -39,6 +39,13 @@ class Empirio implements ConnectionHandler, LobbyUI.Handler,
 	onSocketError(reason: string)
 	{
 		console.log("Socket error: " + reason);
+		UI.showErrorPopup("Connection to the server was lost");
+	}
+
+	onSocketClosed()
+	{
+		console.log("Socket closed");
+		UI.showErrorPopup("Connection to the server was lost");
 	}
 
 	onOpen()
@@ -48,6 +55,7 @@ class Empirio implements ConnectionHandler, LobbyUI.Handler,
 
 	onPlayClicked(state: LobbyUI.State)
 	{
+		LobbyUI.hideErrorMessage();
 		UI.showSpinner();
 		let packet: ClientPlayPacket = new ClientPlayPacket();
 		packet.colour = state.colour;
@@ -66,7 +74,12 @@ class Empirio implements ConnectionHandler, LobbyUI.Handler,
 
 	onError(packet: ServerErrorPacket)
 	{
-		console.log("Got error: " + packet.message);
+		console.log("Received the error: " + packet.message);
+		UI.hideSpinner();
+		if (!packet.recoverable || UI.screen() == UI.Screen.game)
+			UI.showErrorPopup(packet.message);
+		else
+			LobbyUI.showErrorMessage(packet.message);
 	}
 
 	onStart(packet: ServerStartPacket)

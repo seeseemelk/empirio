@@ -55,7 +55,7 @@ export namespace GameUI
 	 */
 	export function setPower(power: number | string): void
 	{
-		g_power.innerText = power.toString();
+		g_power.textContent = power.toString();
 	}
 
 	/**
@@ -63,6 +63,6 @@ export namespace GameUI
 	 */
 	export function setRoom(room: number): void
 	{
-		g_room.innerText = "Room #" + room.toString();
+		g_room.textContent = "Room #" + room.toString();
 	}
 }

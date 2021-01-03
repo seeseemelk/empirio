@@ -102,9 +102,9 @@ export class Tile
 	{
 		this._strength = strength;
 		if (strength == 0)
-			this._element.innerText = '';
+			this._element.textContent = '';
 		else
-			this._element.innerText = strength.toString();
+			this._element.textContent = strength.toString();
 	}
 
 	/**

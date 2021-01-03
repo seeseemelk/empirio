@@ -19,9 +19,14 @@ export interface ConnectionHandler
 	onSocketError(reason: string): void;
 
 	/**
-	 * Executes when an error packet is received.
+	 * Executed when an error packet is received.
 	 */
 	onError(packet: ServerErrorPacket): void;
+
+	/**
+	 * Executed when the socket was closed.
+	 */
+	onSocketClosed(): void;
 
 	/**
 	 * Executed when a start packet is received.
@@ -76,6 +81,7 @@ export class Connection
 		this._socket.onopen = () => this.onOpen();
 		this._socket.onerror = (event) => this.onError(event);
 		this._socket.onmessage = (event) => this.onMessage(event);
+		this._socket.onclose = () => this.onClose();
 	}
 
 	send(packet: any)
@@ -88,6 +94,12 @@ export class Connection
 	{
 		console.log("Socket Connected");
 		this._handler.onOpen();
+	}
+
+	private onClose()
+	{
+		console.log("Socket close");
+		this._handler.onSocketClosed();
 	}
 
 	private onError(event: Event)

@@ -1,5 +1,17 @@
 module empirio.net.clientsocket;
 
+import std.exception;
+
+private class EmpirioFatalException : Exception
+{
+	mixin basicExceptionCtors;
+}
+
+private class EmpirioException : Exception
+{
+	mixin basicExceptionCtors;
+}
+
 version(unittest) {}
 else
 {
@@ -52,18 +64,53 @@ else
 				auto json = socket.receiveText().parseJsonString();
 				const packetType = json["type"].to!string;
 
-				switch (packetType)
+				try
 				{
-					case "play":
-						handle(deserializeJson!ClientPlayPacket(json));
-						break;
-					case "click":
-						handle(deserializeJson!ClientClickPacket(json));
-						break;
-					default:
-						logInfo("Received invalid packet from user");
+					switch (packetType)
+					{
+						case "play":
+							handle(deserializeJson!ClientPlayPacket(json));
+							break;
+						case "click":
+							handle(deserializeJson!ClientClickPacket(json));
+							break;
+						default:
+							logInfo("Received invalid packet from user");
+					}
+				}
+				catch (EmpirioException e)
+				{
+					sendError(e.message);
+				}
+				catch (Exception e)
+				{
+					sendFatal("An internal error occured");
+					logException(e, "Exception occured in read loop");
 				}
 			}
+		}
+
+		/**
+		Sends an error message to the client.
+		Params:
+			message = The message to send to the client.
+		*/
+		private void sendError(const(char[]) message, bool recoverable)
+		{
+			ServerErrorPacket packet;
+			packet.message = message;
+			packet.recoverable = recoverable;
+			send(serializeToJson(packet).toString());
+		}
+
+		override void sendError(const(char[]) message)
+		{
+			sendError(message, true);
+		}
+
+		override void sendFatal(const(char[]) message)
+		{
+			sendError(message, false);
 		}
 
 		/**
@@ -99,9 +146,9 @@ else
 		private void handle(ClientPlayPacket packet)
 		{
 			if (!isValidColour(packet.colour))
-				return;
+				throw new EmpirioException("Invalid colour");
 			if (!isValidUsername(packet.username))
-				return;
+				throw new EmpirioException("Invalid username");
 			Room room;
 			if (packet.room.isNull)
 				room = _game.getRandomRoom();

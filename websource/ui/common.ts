@@ -76,6 +76,8 @@ export namespace UI
 	let g_spinnerImage: HTMLImageElement;
 	let g_mouseDrag: MouseDragEvent = new MouseDragEvent();
 	let g_mouseDragListener: MouseDragListener;
+	let g_errorPopup: HTMLDivElement;
+	let g_errorPopupReason: HTMLSpanElement;
 
 	/**
 	 * Initialises the UI.
@@ -85,6 +87,8 @@ export namespace UI
 		g_mouseDragListener = listener;
 		g_lobby = document.getElementById('menu')!;
 		g_game = document.getElementById('game')!;
+		g_errorPopup = <HTMLDivElement> document.getElementById('errorPopup')!;
+		g_errorPopupReason = <HTMLSpanElement> document.getElementById('errorPopupReason')!;
 		g_spinner = <HTMLDivElement> document.getElementById('spinner')!;
 		g_spinnerImage = <HTMLImageElement> document.getElementById('spinnerImage')!;
 
@@ -196,5 +200,14 @@ export namespace UI
 	export function hideSpinner(): void
 	{
 		g_spinner.style.display = 'none';
+	}
+
+	/**
+	 * Shows an error popup.
+	 */
+	export function showErrorPopup(reason: string): void
+	{
+		g_errorPopup.style.display = 'flex';
+		g_errorPopupReason.textContent = reason;
 	}
 }

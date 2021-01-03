@@ -115,3 +115,19 @@ struct ServerPlayerLostPacket
 	/// The ID of the player.
 	string player;
 }
+
+/**
+A packet which is sent when an error occurs.
+*/
+struct ServerErrorPacket
+{
+	/// The type of the packet.
+	string type = "error";
+
+	/// A human-readable error message.
+	const(char)[] message;
+
+	/// `true` if the game can simply continue, `false` if the connection must
+	/// be terminated.
+	bool recoverable;
+}

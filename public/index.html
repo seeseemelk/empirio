@@ -14,6 +14,20 @@
 		<div class="center vertical-parent overlay" id="spinner">
 			<img src="spinner.svg" width="64" id="spinnerImage"/>
 		</div>
+		<div class="center vertical-parent overlay" id="errorPopup">
+			<div class="errorPopup">
+				<p>
+					<span style="font-weight: bold">Whoopsie!</span>
+					<span>Some kind of error occured!</span>
+				</p>
+				<p>
+					<span id="errorPopupReason"></span>
+				</p>
+				<p>
+					Please refresh the page.
+				</p>
+			</div>
+		</div>
 		<div class="center vertical-parent" id="menu">
 			<span class="start">
 				<h1>Empir.io</h1>
@@ -38,7 +52,7 @@
 						<input class="room" type="number" name="room" id="room"><br>
 					</p>
 				</form>
-				<div class="errors" id="errors">Errors</div>
+				<div class="errors" id="smallError">Errors</div>
 				<button id="play-button" disabled>Play</button>
 			</span>
 		</div>

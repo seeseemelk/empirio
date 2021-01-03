@@ -18,6 +18,7 @@ export class ClientClickPacket
 export class ServerErrorPacket
 {
 	message: string;
+	recoverable: boolean;
 }
 
 export class ServerStartPacket
