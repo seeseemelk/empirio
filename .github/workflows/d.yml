@@ -21,7 +21,7 @@ jobs:
     - name: D Compiler Installation
       uses: dlang-community/setup-dlang@v1.0.3
       with:
-        compiler: dmd-2.094.2
+        compiler: dmd-2.095
 
     - name: 'Backend Tests'
       run: dub test --compiler=$DC
