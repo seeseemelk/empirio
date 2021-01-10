@@ -115,7 +115,7 @@ class Room
 	/**
 	Sets a tile.
 	*/
-	void saveTile(Tile tile) @safe
+	void saveTile(Tile tile)
 	{
 		Tile oldTile = _tiles[tile.x][tile.y];
 		observers.each!(observer => observer.onTileChanged(oldTile, tile));

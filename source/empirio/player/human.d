@@ -126,7 +126,7 @@ final class HumanPlayer : Player, RoomObserver
 		_socket.send(packet);
 	}
 
-	private void sendTile(Tile tile) @safe
+	private void sendTile(Tile tile)
 	{
 		ServerTileChangePacket packet;
 		tile.owner.each!((Player owner)

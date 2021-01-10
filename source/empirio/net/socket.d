@@ -10,24 +10,24 @@ interface Socket
     /**
     Send a json string to the client.
     */
-    void send(string str) @safe;
+    void send(string str);
 
 	/**
 	Sends a recoverable error to the client.
 	*/
-	void sendError(string message) @safe;
+	void sendError(string message);
 
 	/**
 	Sends an irrecoverable error to the client.
 	*/
-	void sendFatal(string message) @safe;
+	void sendFatal(string message);
 
 	/**
 	Sends a packet to the client.
 	Params:
 		packet = The packet to send.
 	*/
-	void send(Packet)(Packet packet) @safe
+	void send(Packet)(Packet packet)
 	if (is(Packet == struct))
 	{
 		import vibe.data.json : serializeToJson;

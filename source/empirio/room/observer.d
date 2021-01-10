@@ -21,7 +21,7 @@ interface RoomObserver
 		oldTile = The old tile.
 		newTile = The new tile.
 	*/
-	void onTileChanged(Tile oldTile, Tile newTile) @safe;
+	void onTileChanged(Tile oldTile, Tile newTile);
 
 	/**
 	Executed when a player lost.

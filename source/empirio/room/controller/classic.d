@@ -275,7 +275,7 @@ final class ClassicController : RoomController
 	/**
 	Damages a tile through malnutrition.
 	*/
-	private void damageNaturally(Tile tile) @safe
+	private void damageNaturally(Tile tile)
 	{
 		auto power = tile.strength / 10;
 		if (power < 10)
