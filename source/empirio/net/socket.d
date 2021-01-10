@@ -31,6 +31,7 @@ interface Socket
 	if (is(Packet == struct))
 	{
 		import vibe.data.json : serializeToJson;
+		import std.exception : assumeWontThrow;
 		send(serializeToJson(packet).toString());
 	}
 }

@@ -6,10 +6,13 @@ import empirio.room.controller;
 import empirio.room.observer;
 import empirio.room.tile;
 
+import core.time;
 import optional;
 import std.algorithm;
-import std.random;
 import std.array;
+import std.random;
+import vibe.core.core;
+import vibe.core.log;
 
 /**
 A room controller which implements the classic style of gameplay.
@@ -18,10 +21,22 @@ final class ClassicController : RoomController
 {
 	private PlayerData[Player] _data;
 	private Room _room;
+	private Timer _timer;
+
+	this()
+	{
+		_timer = createTimer(&supplyLineTimer);
+		_timer.rearm(1.seconds, true);
+	}
 
 	override void room(Room room)
 	{
 		_room = room;
+	}
+
+	override void close()
+	{
+		_timer.stop();
 	}
 
     override bool onTileClicked(Player player, Tile tile, int power)
@@ -185,6 +200,95 @@ final class ClassicController : RoomController
 				_room.saveTile(tile);
 			});
 		_room.observers.each!(observer => observer.onPlayerLost(owner));
+	}
+
+	/**
+	Damages the supply lines
+	*/
+	private void supplyLineTimer() nothrow @safe
+	{
+		try
+		{
+			auto callback = () @trusted => damageSupplyLines();
+			callback();
+		}
+		catch (Exception e)
+		{
+			logException(e, "Exception occured while in supply line timer");
+		}
+	}
+
+	/**
+	Damages the supply lines
+	*/
+	private void damageSupplyLines()
+	{
+		Tile[Tile] locationsToDamage;
+
+		_room.findNonEmptyTiles().each!(tile => locationsToDamage[tile] = tile);
+
+		auto capitals = _room.players()
+			.map!(player => data(player).capital);
+		foreach (capital; capitals)
+			findAllConnected(capital, locationsToDamage);
+
+		foreach (tile; locationsToDamage)
+			damageNaturally(tile);
+	}
+
+	/**
+	Find all tiles connected to another tile.
+	*/
+	private void findAllConnected(Tile tile, Tile[Tile] tilesToCheck) @safe
+	{
+		tile.owner.each!((owner)
+		{
+			tryFindConnected(owner, tile.x, tile.y, tilesToCheck);
+		});
+	}
+
+	private void tryFindConnected(Player owner, int x, int y, Tile[Tile] tilesToCheck) @safe
+	{
+		if (!_room.tileExists(x, y))
+			return;
+		Tile tile = _room.getTile(x, y);
+		if (!hasOwner(tile, owner))
+			return;
+		if (tile !in tilesToCheck)
+			return;
+		tilesToCheck.remove(tile);
+
+		tryFindConnected(owner, x - 1, y, tilesToCheck);
+		tryFindConnected(owner, x + 1, y, tilesToCheck);
+		tryFindConnected(owner, x, y - 1, tilesToCheck);
+		tryFindConnected(owner, x, y + 1, tilesToCheck);
+	}
+
+	/**
+	Tests if a tile has a given player as the owner.
+	*/
+	private bool hasOwner(Tile tile, Player player) @safe
+	{
+		return tile.owner.all!(owner => owner is player);
+	}
+
+	/**
+	Damages a tile through malnutrition.
+	*/
+	private void damageNaturally(Tile tile)
+	{
+		auto power = tile.strength / 10;
+		if (power < 10)
+			power = 10;
+
+		tile.strength -= power;
+		if (tile.strength <= 0)
+		{
+			tile.strength = 0;
+			tile.owner = no!Player;
+			tile.type = TileType.unowned;
+		}
+		_room.saveTile(tile);
 	}
 }
 
